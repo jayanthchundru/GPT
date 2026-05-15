@@ -76,30 +76,34 @@ model.eval()
 # print(output_text)
 
 
-parser = argparse.ArgumentParser()
+def main():
+    parser = argparse.ArgumentParser()
 
-parser.add_argument("--prompt", type=str, default="How is your day going?")
-parser.add_argument("--max_new_tokens", type=int, default=80)
-parser.add_argument("--temperature", type=float, default=0.8)
-parser.add_argument("--top_k", type=int, default=50)
+    parser.add_argument("--prompt", type=str, default="How is your day going?")
+    parser.add_argument("--max_new_tokens", type=int, default=80)
+    parser.add_argument("--temperature", type=float, default=0.8)
+    parser.add_argument("--top_k", type=int, default=50)
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-input_ids = tokenizer.encode(args.prompt)
-input_ids = torch.tensor(input_ids, dtype=torch.long).unsqueeze(0).to(device)
+    input_ids = tokenizer.encode(args.prompt)
+    input_ids = torch.tensor(input_ids, dtype=torch.long).unsqueeze(0).to(device)
 
-output_ids = generate_text(
-    model=model,
-    input_ids=input_ids,
-    max_new_tokens=args.max_new_tokens,
-    context_length=GPT_CONFIG["context_length"],
-    temperature=args.temperature,
-    top_k=args.top_k
-)
+    output_ids = generate_text(
+        model=model,
+        input_ids=input_ids,
+        max_new_tokens=args.max_new_tokens,
+        context_length=GPT_CONFIG["context_length"],
+        temperature=args.temperature,
+        top_k=args.top_k
+    )
 
-output_text = tokenizer.decode(output_ids[0].tolist())
+    output_text = tokenizer.decode(output_ids[0].tolist())
+    print(output_text)
 
-print(output_text)
+
+if __name__ == "__main__":
+    main()
 
 
 # CUDA_VISIBLE_DEVICES=0 python generate.py   --prompt "The artist looked"   --max_new_tokens 100
